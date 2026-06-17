@@ -3,13 +3,18 @@ const CHROMATIC_SHARP = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', '
 const CHROMATIC_FLAT = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B']
 
 const NOTE_TO_SEMITONE: Record<string, number> = {
-  C: 0, 'C#': 1, Db: 1,
-  D: 2, 'D#': 3, Eb: 3,
-  E: 4,
-  F: 5, 'F#': 6, Gb: 6,
-  G: 7, 'G#': 8, Ab: 8,
-  A: 9, 'A#': 10, Bb: 10,
-  B: 11,
+  C: 0, 'B#': 0,
+  'C#': 1, Db: 1,
+  D: 2,
+  'D#': 3, Eb: 3,
+  E: 4, Fb: 4,
+  'E#': 5, F: 5,
+  'F#': 6, Gb: 6,
+  G: 7,
+  'G#': 8, Ab: 8,
+  A: 9,
+  'A#': 10, Bb: 10,
+  B: 11, Cb: 11,
 }
 
 const MAJOR_INTERVALS = [0, 2, 4, 5, 7, 9, 11]
@@ -25,16 +30,10 @@ export interface HarmonicFieldResult {
   chords: string[]
 }
 
-export interface ProgressionResult {
-  name: string
-  numerals: string
-  chords: string[]
-}
-
 export function getHarmonicField(
   note: string,
   accidental: string,
-  mode: string
+  mode: string,
 ): HarmonicFieldResult {
   const rootName = accidental ? `${note}${accidental}` : note
   const rootIndex = NOTE_TO_SEMITONE[rootName]
@@ -56,11 +55,7 @@ export function getHarmonicField(
 
   const chords = scaleNotes.map((sn, i) => `${sn}${chordQualities[i]}`)
 
-  return {
-    noteName: rootName,
-    numerals: numeralSet,
-    chords,
-  }
+  return { noteName: rootName, numerals: numeralSet, chords }
 }
 
 function extractRoot(chord: string): string {
@@ -68,25 +63,20 @@ function extractRoot(chord: string): string {
   return m ? m[0] : chord
 }
 
-export function getProgressions(
-  patterns: { name: string; numerals: string }[],
-  field: HarmonicFieldResult
-): ProgressionResult[] {
-  return patterns.map((p) => {
-    const parts = p.numerals.split(' - ')
-    const chords = parts.map((part) => {
-      const romanMatch = part.match(/^[IVXLCDM]+/)
-      if (!romanMatch) return part
+export function getProgressionChords(
+  field: HarmonicFieldResult,
+  numerals: string[],
+): string[] {
+  return numerals.map((numeral) => {
+    const romanMatch = numeral.match(/^[IVXLCDM]+/)
+    if (!romanMatch) return numeral
 
-      const roman = romanMatch[0]
-      const suffix = part.slice(roman.length)
-      const index = ROMAN_MAP[roman]
-      if (index === undefined || index >= field.chords.length) return part
+    const roman = romanMatch[0]
+    const suffix = numeral.slice(roman.length)
+    const index = ROMAN_MAP[roman]
+    if (index === undefined || index >= field.chords.length) return numeral
 
-      const root = extractRoot(field.chords[index])
-      return root + suffix
-    })
-
-    return { name: p.name, numerals: p.numerals, chords }
+    const root = extractRoot(field.chords[index])
+    return root + suffix
   })
 }

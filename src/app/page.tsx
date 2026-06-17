@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { notes, accidentals, modes, progressionPatterns, type Note } from "@/lib/mockData";
-import { getHarmonicField, getProgressions } from "@/lib/harmonicField";
+import { getHarmonicField, getProgressionChords } from "@/lib/musicEngine";
 
 const btnBase =
   "h-12 w-12 rounded-lg text-base font-semibold transition-colors duration-150";
@@ -27,7 +27,11 @@ export default function Home() {
   const [selectedMode, setSelectedMode] = useState("");
 
   const field = getHarmonicField(selectedNote, selectedAccidental, selectedMode);
-  const progressions = getProgressions(progressionPatterns, field);
+  const progressions = progressionPatterns.map(p => ({
+    name: p.name,
+    numerals: p.numerals.join(' - '),
+    chords: getProgressionChords(field, p.numerals),
+  }));
 
   return (
     <div className="mx-auto flex min-h-dvh max-w-7xl items-start justify-center gap-6 px-4 py-8 sm:px-6 sm:py-12">

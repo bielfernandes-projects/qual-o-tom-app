@@ -11,10 +11,10 @@ export const modes = [
 
 export interface ProgressionPattern {
   name: string
-  numerals: string
+  numerals: string[]
 }
 
 export const progressionPatterns: ProgressionPattern[] = [
-  { name: 'Pop', numerals: 'I - V - VIm - IV' },
-  { name: 'Jazz', numerals: 'IIm7 - V7 - Imaj7' },
+  { name: 'Pop', numerals: ['I', 'V', 'VIm', 'IV'] },
+  { name: 'Jazz', numerals: ['IIm7', 'V7', 'Imaj7'] },
 ]
