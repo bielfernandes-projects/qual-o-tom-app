@@ -17,9 +17,12 @@ src/
     globals.css      — estilos globais, dark mode (zinc-950)
     layout.tsx       — root layout, metadata, font
     page.tsx         — página principal (Client Component)
+  components/
+    ChordDiagram.tsx — SVG de diagrama de acordes (violão / cavaco)
   lib/
     mockData.ts      — dados estáticos (notas, acidentes, modos, patterns)
     musicEngine.ts   — motor de teoria musical (puro TS, sem React)
+    chordDb.ts       — banco de acordes com templates + transposição
 docs/
   ARCHITECTURE.md    — este arquivo
   CHANGELOG.md       — histórico de alterações
@@ -28,6 +31,10 @@ docs/
 ## Fluxo de Dados
 
 ```
+Usuário seleciona Instrumento │
+        ▼
+useState atualiza instrument ('guitar' | 'cavaco')
+
 Usuário clica em Nota / Acidente / Modo
         │
         ▼
@@ -44,7 +51,13 @@ getProgressionChords(field, numerals[])
   → retorna string[] com os acordes da progressão
         │
         ▼
-Renderiza campo harmônico + cards de progressão
+getChordShape(instrument, chordName)
+  → busca shape no banco (chordDb)
+  → retorna number[] ou null
+        │
+        ▼
+<ChordDiagram instrument frets={shape} />
+  → renderiza SVG diagrama (ou grid vazio se null)
 ```
 
 ## Motor Musical (`musicEngine.ts`)
@@ -77,6 +90,46 @@ Arquivo puramente funcional, sem dependências. Duas funções exportadas:
 | `Cb` | Mapeado para semitom 11 (igual B) |
 | `Fb` | Mapeado para semitom 4 (igual E) |
 | Nota inválida | Fallback para C |
+
+## Banco de Acordes (`chordDb.ts`)
+
+Arquivo puro TS, sem dependências. Usa **6 templates** (violão maior/menor/sétima + cavaco maior/menor/sétima) e transpõe para as 12 notas via `findAllInKey()`, gerando **36 acordes × 2 instrumentos** automaticamente.
+
+### `getChordShape(instrument, chordName)`
+
+1. Tenta lookup exato (`Dm7`)
+2. Tenta sem extensão (`Dm7` → `Dm`)
+3. Tenta só a tônica (`Dm` → `D`)
+4. Retorna `null` → componente exibe grid vazio
+
+### Templates de Forma
+
+| Template | Violão (referência) | Cavaco (referência) |
+|---|---|---|
+| Maior | C: x32010 | C: 2012 |
+| Menor | Am: x02210 | Dm: 2210 |
+| Sétima | E7: 020100 | C7: 0001 |
+
+## Componente `<ChordDiagram />`
+
+SVG puro, `96×120` px, dimensão fixa para evitar layout shift. Props:
+
+```ts
+interface Props {
+  instrument: "guitar" | "cavaco"
+  chordName: string
+  frets: number[] | null
+}
+```
+
+**Renderização:**
+1. Fundo escuro (`#27272a`) para o braço, com 4 trastes (5 linhas horizontais)
+2. Linhas verticais para cordas (6 ou 4, espaçamento proporcional)
+3. Nut (linha 0) mais grossa que as demais
+4. Se acorde inicia após casa 1: texto `nfr` no canto superior esquerdo
+5. `X` estilizado para corda mutada (-1), `O` vazado para corda solta (0)
+6. Círculos laranja (`#f97316`) nas posições dos trastes (>0)
+7. Fallback: grid vazio (sem bolinhas nem textos)
 
 ## Layout e Responsividade
 

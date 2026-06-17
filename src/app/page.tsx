@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { notes, accidentals, modes, progressionPatterns, type Note } from "@/lib/mockData";
 import { getHarmonicField, getProgressionChords } from "@/lib/musicEngine";
+import { getChordShape } from "@/lib/chordDb";
+import ChordDiagram from "@/components/ChordDiagram";
 
 const btnBase =
   "h-12 w-12 rounded-lg text-base font-semibold transition-colors duration-150";
@@ -25,6 +27,7 @@ export default function Home() {
   const [selectedNote, setSelectedNote] = useState<Note>("C");
   const [selectedAccidental, setSelectedAccidental] = useState("");
   const [selectedMode, setSelectedMode] = useState("");
+  const [instrument, setInstrument] = useState<"guitar" | "cavaco">("guitar");
 
   const field = getHarmonicField(selectedNote, selectedAccidental, selectedMode);
   const progressions = progressionPatterns.map(p => ({
@@ -50,6 +53,23 @@ export default function Home() {
         <AdBanner />
 
         <section className="flex w-full flex-col items-center gap-6">
+          <p className="text-sm text-zinc-400">Instrumento</p>
+          <div className="flex justify-center gap-2">
+            {(["guitar", "cavaco"] as const).map((inst) => (
+              <button
+                key={inst}
+                onClick={() => setInstrument(inst)}
+                className={`h-12 rounded-lg px-6 text-base font-semibold transition-colors duration-150 ${
+                  instrument === inst
+                    ? "bg-orange-500 text-white"
+                    : "bg-zinc-800 text-zinc-300 hover:bg-zinc-700"
+                }`}
+              >
+                {inst === "guitar" ? "Violão" : "Cavaco"}
+              </button>
+            ))}
+          </div>
+
           <p className="text-sm text-zinc-400">Selecione o tom abaixo</p>
 
           <div className="flex flex-wrap justify-center gap-2">
@@ -139,9 +159,11 @@ export default function Home() {
                         <span className="text-sm font-bold text-zinc-100">
                           {chord}
                         </span>
-                        <div className="flex h-32 w-24 items-center justify-center rounded-md border border-zinc-300 bg-white text-xs text-black">
-                          {chord}
-                        </div>
+                        <ChordDiagram
+                          instrument={instrument}
+                          chordName={chord}
+                          frets={getChordShape(instrument, chord)}
+                        />
                       </div>
                     ))}
                   </div>
