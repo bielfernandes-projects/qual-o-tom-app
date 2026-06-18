@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { notes, accidentals, modes, progressionPatterns, type Note } from "@/lib/mockData";
 import { getHarmonicField, getProgressionChords } from "@/lib/musicEngine";
 import ChordDiagram from "@/components/ChordDiagram";
@@ -199,6 +200,13 @@ export default function Home() {
         )}
 
         <AdBanner />
+
+        <footer className="text-zinc-500 text-xs py-8 border-t border-zinc-900 mt-12 text-center w-full">
+          <span>© 2026 Qual o Tom App. Todos os direitos reservados.</span>
+          <Link href="/politica-de-privacidade" className="hover:text-orange-500 underline ml-4">
+            Política de Privacidade
+          </Link>
+        </footer>
       </div>
 
       <AdSkyscraper side="right" />

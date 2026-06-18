@@ -2,6 +2,14 @@
 
 Todas as alterações notáveis neste projeto serão documentadas aqui.
 
+## [0.5.0] — 18/06/2026
+
+### Adicionado
+- Vercel Analytics (`@vercel/analytics`) para rastreamento de acessos
+- Script do Google AdSense (`ca-pub-4704944043310509`) no `<head>` do layout
+- Página de Política de Privacidade (`/politica-de-privacidade`) com texto legal (cookies, AdSense, links de terceiros)
+- Footer no rodapé do app com copyright e link para a política de privacidade
+
 ## [0.4.1] — 18/06/2026
 
 ### Corrigido
