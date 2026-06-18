@@ -2,6 +2,16 @@
 
 Todas as alterações notáveis neste projeto serão documentadas aqui.
 
+## [0.7.0] — 18/06/2026
+
+### Alterado
+- Logo e icon convertidos de PNG (309KB) para WebP (6.6KB cada) — redução de ~98%
+- `next.config.ts` configurado para otimização automática de imagens (WebP/AVIF)
+- Motor musical (`HomeClient.tsx`) agora usa `useMemo` — evita recálculos desnecessários
+
+### Removido
+- SVGs boilerplate do `create-next-app` não utilizados (`file.svg`, `globe.svg`, `next.svg`, `vercel.svg`, `window.svg`)
+
 ## [0.6.0] — 18/06/2026
 
 ### Adicionado

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { notes, accidentals, modes, progressionPatterns, type Note } from "@/lib/mockData";
 import { getHarmonicField, getProgressionChords } from "@/lib/musicEngine";
 import ChordDiagram from "@/components/ChordDiagram";
@@ -14,12 +14,18 @@ export default function HomeClient() {
   const [instrument, setInstrument] = useState<"guitar" | "cavaco">("guitar");
   const [showDiagrams, setShowDiagrams] = useState(true);
 
-  const field = getHarmonicField(selectedNote, selectedAccidental, selectedMode);
-  const progressions = progressionPatterns.map(p => ({
-    name: p.name,
-    numerals: p.numerals.join(' - '),
-    chords: getProgressionChords(field, p.numerals),
-  }));
+  const field = useMemo(
+    () => getHarmonicField(selectedNote, selectedAccidental, selectedMode),
+    [selectedNote, selectedAccidental, selectedMode],
+  );
+  const progressions = useMemo(
+    () => progressionPatterns.map(p => ({
+      name: p.name,
+      numerals: p.numerals.join(' - '),
+      chords: getProgressionChords(field, p.numerals),
+    })),
+    [field],
+  );
 
   return (
     <>

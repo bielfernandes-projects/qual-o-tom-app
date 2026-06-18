@@ -13,7 +13,7 @@ export default function Home() {
 
       <div className="flex w-full max-w-3xl flex-col items-center gap-8">
         <header className="text-center">
-          <Image src="/logo.png" alt="Logo Qual o Tom App" width={80} height={80} className="mx-auto mb-4 rounded-xl" priority />
+          <Image src="/logo.webp" alt="Logo Qual o Tom App" width={80} height={80} className="mx-auto mb-4 rounded-xl" priority />
           <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
             Qual o Tom App
           </h1>
