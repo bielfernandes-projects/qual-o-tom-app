@@ -5,6 +5,7 @@ import { getChordShape } from "@/lib/chordDb";
 interface Props {
   instrument: string
   chordName: string
+  light?: boolean
 }
 
 const STRING_COUNT: Record<string, number> = { guitar: 6, cavaco: 4 }
@@ -15,14 +16,44 @@ const TOP = 18
 const FRET_H = 22
 const FRET_COUNT = 4
 
-export default function ChordDiagram({ instrument, chordName }: Props) {
+export default function ChordDiagram({ instrument, chordName, light }: Props) {
   const shape = getChordShape(instrument, chordName)
+
+  const c = light
+    ? {
+        bg: "#e4e4e7",
+        nut: "#52525b",
+        fret: "#a1a1aa",
+        string: "#d4d4d8",
+        xMark: "#a1a1aa",
+        oStroke: "#52525b",
+        dot: "#c2410c",
+        label: "#52525b",
+        fallbackBg: "bg-zinc-100",
+        fallbackBorder: "border-zinc-300",
+        fallbackText: "text-zinc-500",
+        fallbackChord: "text-zinc-900",
+      }
+    : {
+        bg: "#27272a",
+        nut: "#a1a1aa",
+        fret: "#3f3f46",
+        string: "#52525b",
+        xMark: "#71717a",
+        oStroke: "#a1a1aa",
+        dot: "#f97316",
+        label: "#a1a1aa",
+        fallbackBg: "bg-zinc-900",
+        fallbackBorder: "border-zinc-700",
+        fallbackText: "text-zinc-500",
+        fallbackChord: "text-white",
+      }
 
   if (!shape) {
     return (
-      <div className="w-24 h-32 bg-zinc-900 border border-zinc-700 flex flex-col items-center justify-center text-center p-2 rounded-md">
-        <span className="text-zinc-500 text-xs mb-1">Diagrama não mapeado</span>
-        <span className="font-bold text-white">{chordName}</span>
+      <div className={`w-24 h-32 ${c.fallbackBg} border ${c.fallbackBorder} flex flex-col items-center justify-center text-center p-2 rounded-md`}>
+        <span className={`${c.fallbackText} text-xs mb-1`}>Diagrama não mapeado</span>
+        <span className={`font-bold ${c.fallbackChord}`}>{chordName}</span>
       </div>
     )
   }
@@ -60,7 +91,7 @@ export default function ChordDiagram({ instrument, chordName }: Props) {
         y={TOP}
         width={W - PAD * 2}
         height={FRET_H * FRET_COUNT}
-        fill="#27272a"
+        fill={c.bg}
         rx={2}
       />
 
@@ -71,7 +102,7 @@ export default function ChordDiagram({ instrument, chordName }: Props) {
           textAnchor="end"
           fontSize={9}
           fontWeight={600}
-          fill="#a1a1aa"
+          fill={c.label}
         >
           {startFret}
         </text>
@@ -84,7 +115,7 @@ export default function ChordDiagram({ instrument, chordName }: Props) {
           y1={TOP + i * FRET_H}
           x2={W - PAD}
           y2={TOP + i * FRET_H}
-          stroke={i === 0 ? "#a1a1aa" : "#3f3f46"}
+          stroke={i === 0 ? c.nut : c.fret}
           strokeWidth={i === 0 ? 2.5 : 1}
         />
       ))}
@@ -96,7 +127,7 @@ export default function ChordDiagram({ instrument, chordName }: Props) {
           y1={TOP}
           x2={x}
           y2={TOP + FRET_H * FRET_COUNT}
-          stroke="#52525b"
+          stroke={c.string}
           strokeWidth={0.7}
         />
       ))}
@@ -113,7 +144,7 @@ export default function ChordDiagram({ instrument, chordName }: Props) {
               textAnchor="middle"
               fontSize={11}
               fontWeight={700}
-              fill="#71717a"
+              fill={c.xMark}
             >
               X
             </text>
@@ -130,7 +161,7 @@ export default function ChordDiagram({ instrument, chordName }: Props) {
               cy={TOP - 5}
               r={4.5}
               fill="none"
-              stroke="#a1a1aa"
+              stroke={c.oStroke}
               strokeWidth={1.5}
             />
           )
@@ -144,7 +175,7 @@ export default function ChordDiagram({ instrument, chordName }: Props) {
               cx={x}
               cy={y}
               r={5.5}
-              fill="#f97316"
+              fill={c.dot}
             />
           )
         }

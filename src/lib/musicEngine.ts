@@ -76,7 +76,12 @@ export function getProgressionChords(
     const index = ROMAN_MAP[roman]
     if (index === undefined || index >= field.chords.length) return numeral
 
-    const root = extractRoot(field.chords[index])
+    const fieldChord = field.chords[index]
+    const root = extractRoot(fieldChord)
+
+    if (suffix === '' && fieldChord !== root) {
+      return fieldChord
+    }
     return root + suffix
   })
 }

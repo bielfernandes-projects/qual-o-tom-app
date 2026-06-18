@@ -4,10 +4,14 @@ import { useState, useMemo } from "react";
 import { notes, accidentals, modes, progressionPatterns, type Note } from "@/lib/mockData";
 import { getHarmonicField, getProgressionChords } from "@/lib/musicEngine";
 import ChordDiagram from "@/components/ChordDiagram";
+import { useTheme } from "@/context/ThemeContext";
 
 const btnBase = "h-12 w-12 rounded-lg text-base font-semibold transition-colors duration-150";
 
 export default function HomeClient() {
+  const { theme } = useTheme();
+  const light = theme === "light";
+
   const [selectedNote, setSelectedNote] = useState<Note>("C");
   const [selectedAccidental, setSelectedAccidental] = useState("");
   const [selectedMode, setSelectedMode] = useState("");
@@ -27,10 +31,25 @@ export default function HomeClient() {
     [field],
   );
 
+  const labelCls = light ? "text-zinc-500" : "text-zinc-400";
+  const btnInactive = light
+    ? "bg-zinc-200 text-zinc-600 hover:bg-zinc-300"
+    : "bg-zinc-800 text-zinc-300 hover:bg-zinc-700";
+  const fieldSection = light
+    ? "bg-white border border-zinc-200 shadow-sm"
+    : "bg-zinc-900/50 border-zinc-800";
+  const fieldChordCls = light ? "text-zinc-800" : "text-zinc-100";
+  const progTitle = light ? "text-zinc-700" : "text-zinc-300";
+  const cardCls = light
+    ? "bg-white border border-zinc-200 shadow-sm"
+    : "bg-zinc-900";
+  const cardTitle = light ? "text-zinc-800" : "text-zinc-200";
+  const toggleOff = light ? "bg-zinc-300" : "bg-zinc-700";
+
   return (
     <>
       <section className="flex w-full flex-col items-center gap-6">
-        <p className="text-sm text-zinc-400">Instrumento</p>
+        <p className={`text-sm ${labelCls}`}>Instrumento</p>
         <div className="flex justify-center gap-2">
           {(["guitar", "cavaco"] as const).map((inst) => (
             <button
@@ -39,7 +58,7 @@ export default function HomeClient() {
               className={`h-12 rounded-lg px-6 text-base font-semibold transition-colors duration-150 ${
                 instrument === inst
                   ? "bg-orange-500 text-white"
-                  : "bg-zinc-800 text-zinc-300 hover:bg-zinc-700"
+                  : btnInactive
               }`}
             >
               {inst === "guitar" ? "Violão" : "Cavaco"}
@@ -51,7 +70,7 @@ export default function HomeClient() {
           <button
             onClick={() => setShowDiagrams((v) => !v)}
             className={`relative h-6 w-11 rounded-full transition-colors ${
-              showDiagrams ? "bg-orange-500" : "bg-zinc-700"
+              showDiagrams ? "bg-orange-500" : toggleOff
             }`}
           >
             <span
@@ -60,10 +79,10 @@ export default function HomeClient() {
               }`}
             />
           </button>
-          <span className="text-sm text-zinc-400">Mostrar Diagramas</span>
+          <span className={`text-sm ${labelCls}`}>Mostrar Diagramas</span>
         </div>
 
-        <p className="text-sm text-zinc-400">Selecione o tom abaixo</p>
+        <p className={`text-sm ${labelCls}`}>Selecione o tom abaixo</p>
 
         <div className="flex flex-wrap justify-center gap-2">
           {notes.map((n) => (
@@ -73,7 +92,7 @@ export default function HomeClient() {
               className={`${btnBase} ${
                 selectedNote === n
                   ? "bg-orange-500 text-white"
-                  : "bg-zinc-800 text-zinc-300 hover:bg-zinc-700"
+                  : btnInactive
               }`}
             >
               {n}
@@ -91,7 +110,7 @@ export default function HomeClient() {
               className={`${btnBase} w-14 ${
                 selectedAccidental === a
                   ? "bg-orange-500 text-white"
-                  : "bg-zinc-800 text-zinc-300 hover:bg-zinc-700"
+                  : btnInactive
               }`}
             >
               {a}
@@ -107,7 +126,7 @@ export default function HomeClient() {
               className={`h-12 rounded-lg px-6 text-base font-semibold transition-colors duration-150 ${
                 selectedMode === m.value
                   ? "bg-orange-500 text-white"
-                  : "bg-zinc-800 text-zinc-300 hover:bg-zinc-700"
+                  : btnInactive
               }`}
             >
               {m.label}
@@ -116,17 +135,17 @@ export default function HomeClient() {
         </div>
       </section>
 
-      <section className="flex min-h-[140px] w-full flex-col items-center justify-center gap-3 rounded-xl bg-zinc-900 p-6">
+      <section className={`flex min-h-[140px] w-full flex-col items-center justify-center gap-3 rounded-xl p-6 border ${fieldSection}`}>
         <div className="flex w-full flex-wrap justify-center gap-x-4 gap-y-1">
           {field.numerals.map((num, i) => (
-            <span key={i} className="text-xs font-medium text-zinc-500">
+            <span key={i} className="text-xs font-medium text-zinc-400">
               {num}
             </span>
           ))}
         </div>
         <div className="flex w-full flex-wrap justify-center gap-x-4 gap-y-2">
           {field.chords.map((chord, i) => (
-            <span key={i} className="text-xl font-bold text-zinc-100">
+            <span key={i} className={`text-xl font-bold ${fieldChordCls}`}>
               {chord}
             </span>
           ))}
@@ -135,14 +154,14 @@ export default function HomeClient() {
 
       {progressions.length > 0 && (
         <section className="flex w-full flex-col gap-10">
-          <h2 className="text-lg font-semibold text-zinc-300">Progressões</h2>
+          <h2 className={`text-lg font-semibold ${progTitle}`}>Progressões</h2>
           <div className="flex w-full flex-col gap-8">
             {progressions.map((prog) => (
               <div
                 key={prog.name}
-                className="flex w-full flex-col gap-4 rounded-xl bg-zinc-900 p-5"
+                className={`flex w-full flex-col gap-4 rounded-xl p-5 ${cardCls}`}
               >
-                <h3 className="text-base font-semibold text-zinc-200">
+                <h3 className={`text-base font-semibold ${cardTitle}`}>
                   {prog.name}
                 </h3>
                 <p className="text-xs text-zinc-500">{prog.numerals}</p>
@@ -151,16 +170,17 @@ export default function HomeClient() {
                     <div key={i} className="flex flex-col items-center gap-2">
                       {showDiagrams ? (
                         <>
-                          <span className="text-sm font-bold text-zinc-100">
+                          <span className={`text-sm font-bold ${fieldChordCls}`}>
                             {chord}
                           </span>
                           <ChordDiagram
                             instrument={instrument}
                             chordName={chord}
+                            light={light}
                           />
                         </>
                       ) : (
-                        <span className="text-lg font-bold text-zinc-100">
+                        <span className={`text-lg font-bold ${fieldChordCls}`}>
                           {chord}
                         </span>
                       )}
