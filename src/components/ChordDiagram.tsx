@@ -46,8 +46,15 @@ export default function ChordDiagram({ instrument, chordName }: Props) {
     return TOP + (rel - 1) * FRET_H + FRET_H / 2
   }
 
+  const label = `Diagrama de acorde ${chordName} para ${instrument === "guitar" ? "violão" : "cavaco"}`
+
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} className="w-24 h-32 shrink-0">
+    <svg
+      viewBox={`0 0 ${W} ${H}`}
+      className="w-24 h-32 shrink-0"
+      role="img"
+      aria-label={label}
+    >
       <rect
         x={PAD}
         y={TOP}

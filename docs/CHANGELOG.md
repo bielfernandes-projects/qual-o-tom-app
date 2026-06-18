@@ -2,6 +2,22 @@
 
 Todas as alterações notáveis neste projeto serão documentadas aqui.
 
+## [0.6.0] — 18/06/2026
+
+### Adicionado
+- `robots.txt` com referência ao sitemap XML
+- Sitemap XML (`/sitemap.xml`) com URLs do app e política de privacidade
+- `aria-label` e `role="img"` nos SVGs dos diagramas de acorde para acessibilidade SEO
+- Server/Client Component split: página principal agora é Server Component (SSR), parte interativa em `HomeClient.tsx`
+
+### Alterado
+- Title e description incluem "Dicionário de Acordes para violão e cavaco"
+- Script do AdSense migrado para `next/script` com `strategy="afterInteractive"` (melhor LCP)
+- Keywords ampliadas com "dicionário de acordes"
+
+### Removido
+- `public/site.webmanifest` duplicado (substituído pelo `manifest.ts` do Next.js)
+
 ## [0.5.0] — 18/06/2026
 
 ### Adicionado
